@@ -1,16 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import CartTable from '../component/CartTable'
-export class Cart extends Component {
-
-
+import NavBar from '../component/NavBar'
+export class TopBar extends Component {
 
     render() {
 
         const { cart } = this.props
         return (
             <div>
-                <CartTable cart={cart} />
+                <NavBar cart={cart} />
             </div>
         )
     }
@@ -19,4 +17,4 @@ const mapStateToProps = (state) => ({
     cart: state.cart
 })
 
-export default connect(mapStateToProps)(Cart)
+export default connect(mapStateToProps)(TopBar)

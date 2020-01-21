@@ -1,58 +1,84 @@
-import {PRODUCT_ACTIONS} from '../actions'
+import { PRODUCT_ACTIONS } from '../actions'
+import { products as data } from '../data'
 
+const d_products = data.map(x => ({ inCart: false, name: x.name, image: x.image, id: x.id, price: x.price, productCount: 0 }))
 
-const initialState = [{
-    id : 1,
-    name : "Coffee Mugs yy",
-    price : 100,
-    image : "coffee1.png",
-    quantity : 1
-},
-{
-    id : 2,
-    name : "Coffee Mugs xx",
-    price :250,
-    image : "coffee2.png",
-    quantity : 1
-},
-{
-    id : 3,
-    name : "Coffee Mugs ww",
-    price : 168,
-    image : "coffee3.png",
-    quantity : 1
-},{  id : 4,name : "Coffee Mugs zz", price : 399 , quantity : 1 , image : "coffee4.png"},{  id : 5,name : "Coffee Mugs For Travel", price : 599 , quantity : 1 , image : "coffee5.png"}]
+console.log(d_products)
+
+const initialState = {
+    products: d_products,
+    openModal: false,
+    modalProduct: null
+
+}
 
 
 
 export default function products(state = initialState, action) {
-    switch (action.type) {
-      case PRODUCT_ACTIONS.GET_PRODUCTS:
-        return state
 
-        case PRODUCT_ACTIONS.GET_PRODUCTS_SORTED:{
-             const products = [...state];
+    switch (action.type) {
+
+        case PRODUCT_ACTIONS.OPEN_PRODUCT_MODAL: {
+
+            return {
+                products: state.products,
+                openModal: true,
+                modalProduct: action.payload
+            }
+        }
+        case PRODUCT_ACTIONS.CLOSE_PRODUCT_MODAL: {
+
+            return {
+                products: state.products,
+                openModal: !state.openModal,
+                modalProduct: null
+            }
+        }
+
+        case PRODUCT_ACTIONS.TOGGLE_IN_CART: {
+            const del_product = action.payload
+
+            const index = state.products.map(x => x.id).indexOf(del_product.id)
+            del_product.inCart = !del_product.inCart
+            console.log(del_product)
+            const products = state.products.slice();
+
+            products.splice(index, 1, del_product)
+            console.log(products)
+
+            return {
+                ...state,
+                products: products
+            }
+        }
+
+        case PRODUCT_ACTIONS.GET_PRODUCTS: {
+            return state
+        }
+
+        case PRODUCT_ACTIONS.GET_PRODUCTS_SORTED: {
+            const products = [...state.products];
             const sortBy = action.payload
-           // console.log(sortBy)
+            // console.log(sortBy)
             products.sort(compare[sortBy])
             return products
         }
-       
-      default:
-        return state
+
+        default:
+            return state
     }
-  }
+}
 
 
-  const compare = {
+const compare = {
     lowestprice: (a, b) => {
-      if (a.price < b.price) return -1;
-      if (a.price > b.price) return 1;
-      return 0;
+        if (a.price < b.price) return -1;
+        if (a.price > b.price) return 1;
+        return 0;
     },
     highestprice: (a, b) => {
-      if (a.price > b.price) return -1;
-      if (a.price < b.price) return 1;
-      return 0;
+        if (a.price > b.price) return -1;
+        if (a.price < b.price) return 1;
+        return 0;
     }
-  };
+};
